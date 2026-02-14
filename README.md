@@ -153,5 +153,3 @@ Projeto de estudo para praticar:
 * Frontend e backend desacoplados
 
 Simples de entender, simples de rodar, e fácil de evoluir depois.
-
----
