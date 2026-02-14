@@ -1,73 +1,157 @@
-# React + TypeScript + Vite
+# chat-oldtimes-frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend do **chat-oldtimes**.
 
-Currently, two official plugins are available:
+Interface web em React que conversa em tempo real com o backend em Go usando **WebSocket**.
+A proposta é um bate-papo simples estilo “chat antigo”, porém com visual moderno dark.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> O frontend sozinho não faz nada.
+> Primeiro você precisa subir o backend.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Requisitos
 
-## Expanding the ESLint configuration
+Você precisa ter instalado:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* Node.js 18+
+* NPM
+* Go (para rodar o backend)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 1) Rodar o backend (obrigatório)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Entre na pasta do backend (`chat-oldtimes`) e execute:
+
+```
+go run .
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Se estiver certo, aparecerá algo como:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+chat backend on :8080
+```
+
+Teste abrindo no navegador:
+
+```
+http://localhost:8080/rooms
+```
+
+Se abrir um JSON, o backend está funcionando.
+
+---
+
+## 2) Rodar o frontend
+
+Agora vá para este repositório (`chat-oldtimes-frontend`):
+
+### instalar dependências
+
+```
+npm install
+```
+
+### iniciar o servidor de desenvolvimento
+
+```
+npm run dev
+```
+
+Abra no navegador:
+
+```
+http://localhost:5173
+```
+
+---
+
+## Como usar
+
+1. Clique em **Conectar**
+2. Digite um nickname
+3. Entre na sala `geral`
+4. Abra outra aba do navegador
+5. Use outro nickname
+6. Converse
+
+As mensagens devem aparecer em tempo real entre as abas.
+
+---
+
+## Como funciona a comunicação
+
+O frontend abre uma conexão WebSocket em:
+
+```
+ws://localhost:8080/ws?nick=SEU_NICK
+```
+
+Depois envia comandos em JSON.
+
+Entrar em sala:
+
+```
+{"type":"join","room":"geral"}
+```
+
+Enviar mensagem:
+
+```
+{"type":"message","text":"ola"}
+```
+
+Trocar nickname:
+
+```
+{"type":"nick","nick":"novoNick"}
+```
+
+---
+
+## Estrutura
+
+```
+src/
+  lib/wsChat.ts     -> cliente WebSocket
+  App.tsx           -> interface do chat
+  main.tsx          -> inicialização do React
+  index.css         -> estilos
+```
+
+---
+
+## Problemas comuns
+
+**Não conecta**
+→ O backend não está rodando.
+
+**“Você precisa estar conectado”**
+→ Clique primeiro em **Conectar** antes de entrar na sala.
+
+**Funciona no terminal mas não no navegador**
+→ Abra:
+
+```
+http://localhost:8080/rooms
+```
+
+Se não abrir, o navegador não está alcançando o backend.
+
+---
+
+## Objetivo do projeto
+
+Projeto de estudo para praticar:
+
+* WebSocket
+* Comunicação em tempo real
+* React + Vite
+* Concorrência em Go
+* Frontend e backend desacoplados
+
+Simples de entender, simples de rodar, e fácil de evoluir depois.
+
+---
